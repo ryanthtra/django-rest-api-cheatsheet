@@ -199,3 +199,42 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
 ```
+
+## Allow Cross-Origin Resource Sharing (CORS)
+
+1. Install package
+
+```
+(projdir) $ pipenv install django-cors-headers==2.4.0
+```
+
+2. Update maindir/settings.py
+   2a. Add `corsheaders` in `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+  ...
+  # 3rd party
+  'rest_framework',
+  'corsheaders',
+  ...
+]
+```
+
+2b. Add middlewares to the front of the `MIDDLEWARE` list:
+
+```python
+MIDDLEWARE = [
+  'corsheaders.middleware.CorsMiddleware',
+  'django.middleware.common.CommonMiddleware',
+  ...
+]
+```
+
+2c. Add `CORS_ORIGIN_WHITELIST`:
+
+```python
+CORS_ORIGIN_WHITELIST = (
+  'mydomain.com' # Whatever domain
+)
+```
