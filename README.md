@@ -1,20 +1,39 @@
 # django-rest-api-cheatsheet
+
 A simple cheatsheet for a Django REST API backend.
 
 ## Development Environment (Mac OSX)
+
 1. Install Python 3
+
 ```
 $ brew install python3
 ```
+
 2. Install pipenv
+
 ```
 $ pip3 install pipenv
 ```
 
 ## Initial Project Setup
+
 ```
 $ mkdir projdir && cd projdir
-$ pipenv install django==2.0
+$ pipenv install django==2.1
+```
+
+## NOTE: pip 18.1 is buggy! Current fix (immediately after the previous step) is this:
+
+```
+$ pip3 install pipenv
+$ pipenv run pip install pip==18.0
+$ pipenv install
+```
+
+## Initial Project Setup (Continued)
+
+```
 $ pipenv install pylint
 $ pipenv shell
 (projdir) $ django-admin startproject my_project .
@@ -22,13 +41,17 @@ $ pipenv shell
 (projdir) $ python manage.py createsuperuser
 (projdir) $ python manage.py runserver
 ```
-Suggestion: Change the URL of the admin site in ```my_project/urls.py```.
+
+Suggestion: Change the URL of the admin site in `my_project/urls.py`.
 
 ## Adding a Django app to the project
+
 ```
 (projdir) $ python manage.py startapp products
 ```
-2. Add the new app to ```INSTALLED_APPS``` list in ```my_project/settings.py```.
+
+2. Add the new app to `INSTALLED_APPS` list in `my_project/settings.py`.
+
 ```python
 # my_project/settings.py
 INSTALLED_APPS = [
@@ -39,12 +62,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Local
-    'products',
+    'products.apps.ProductsConfig',
 ]
 ```
 
 ## Creating a Model for the project
-1. Go to ```products/models.py``` and make model:
+
+1. Go to `products/models.py` and make model:
+
 ```python
 # products/models.py
 from django.db import models
@@ -60,15 +85,18 @@ class Product(models.Model):
   def __str__(self):
     return self.name
 ```
-(See https://docs.djangoproject.com/en/2.1/ref/models/fields/ for model fields.] 
+
+(See https://docs.djangoproject.com/en/2.1/ref/models/fields/ for model fields.]
 
 2. Create migration file (make sure you add the app name at the end).
+
 ```
 (projdir) $ python manage.py makemigrations products
 (projdir) $ python manage.py migrate
 ```
 
-3. Register the model in ```products/admin.py```.
+3. Register the model in `products/admin.py`.
+
 ```python
 # products/admin.py
 from django.contrib import admin
@@ -78,10 +106,13 @@ admin.site.register(Product) # Added in this step
 ```
 
 ## Setting up Django REST Framework
+
 ```unix
 (projdir) $ pipenv install djangorestframework==3.8.2
 ```
-2. Add to ```INSTALLED_APPS``` and add ```REST_FRAMEWORK``` object in ```my_project/settings.py```:
+
+2. Add to `INSTALLED_APPS` and add `REST_FRAMEWORK` object in `my_project/settings.py`:
+
 ```python
 # my_project/settings.py
 ...
@@ -96,7 +127,7 @@ INSTALLED_APPS = [
     # 3rd-party
     'rest_framework', # Added in this step
     # Local
-    'products', 
+    'products',
 ]
 
 REST_FRAMEWORK = { # Added in this step
@@ -108,6 +139,7 @@ REST_FRAMEWORK = { # Added in this step
 ```
 
 ## Setting up APIs for an App
+
 1. Create serializers for the models in the app.
 
 ```python
@@ -124,7 +156,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 2. Set up URLs for the app.
 
-First, create paths for app (create ```products/urls.py```):
+First, create paths for app (create `products/urls.py`):
 
 ```python
 # products/urls.py -- new file added
@@ -138,6 +170,7 @@ urlpatterns = [
 ```
 
 Then, create path in project-level URLS file:
+
 ```python
 # my_project/urls.py
 from django.contrib.import admin
@@ -150,6 +183,7 @@ urlpatterns = [
 ```
 
 3. Set up the views for the app:
+
 ```python
 # products/views.py
 from rest_framework import generics # Added
