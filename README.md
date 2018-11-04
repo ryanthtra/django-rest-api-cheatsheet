@@ -238,3 +238,67 @@ CORS_ORIGIN_WHITELIST = (
   'mydomain.com' # Whatever domain
 )
 ```
+
+## Setting Permissions
+
+#### View-Level Permissions
+
+1. In the views.py file, import `permissions` from the `rest_framework` package.
+
+```python
+from rest_framework import generics, permissions
+```
+
+2. Add `permissions_classes` member variable to a view class.
+
+```python
+class ProductList(generics.ListCreateAPIView):
+  permissions_classes = (permissions.IsAuthenticated,)
+```
+
+#### Project-Level Permissions
+
+1. Add permissions settings in setting.py, under the `REST_FRAMEWORK` object and in the `'DEFAULT_PERMISSION_CLASSES'` list.
+
+```python
+# project_dir/settings.py
+...
+REST_FRAMEWORK = {
+  'DEFAULT_PERMISSION_CLASSES': [
+    'rest_framework.permissions.IsAuthenticated',
+  ]
+}
+```
+
+Built-in project-level permissions settings include:
+
+- AllowAny
+- IsAuthenticated
+- IsAdminUser
+- IsAuthenticatedOrReadOnly
+
+#### Custom permissions
+
+1. In file where custom permissions class is defined (Suggestion: make a permissions.py file), import `permissions` package:
+
+```python
+from rest_framework import permissions
+```
+
+2. Declare a class that extends `permissions.BasePermission`. Example:
+
+```python
+class IsOwnerOrReadOnly(permissions.BasePermission):
+```
+
+3. Override boolean methods `has_permission()` or `has_object_permission()`
+
+```python
+def has_object_permission(self, request, view_obj):
+  # Read-only permissions allowed for SAFE_METHODS (GET, OPTIONS, HEAD)
+  if request.method in permissions.SAFE_METHODS:
+    return True
+
+  # Write permissions for owner
+  return obj.owner == request.user
+```
