@@ -486,3 +486,93 @@ router.register('products', ProductViewSet, base_name='products')
 
 urlpatterns = router.urls
 ```
+
+## Generating API Schema
+
+1. Install Core API package via command line.
+
+```
+(projdir) $ pipenv install coreapi==2.3.3
+```
+
+2. Set up `get_schema_view` from the `rest_framework.schemas` package in projdir urls.py.
+
+```python
+from rest_framework.schemas import get_schema_view
+
+schema_view = get_schema_view(title='My APIs')
+```
+
+3. Set up route for the schema.
+
+```python
+urlpatterns = [
+  ...
+  path('schema/', schema_view),
+]
+```
+
+## Implementing API Documentation
+
+#### Option 1: Using Django REST Framework's Built-In Documentation
+
+1. In projdir urls.py, import `include_docs_urls` from `rest_framework`.
+
+```python
+from rest_framework.documentation import include_docs_urls
+```
+
+2. Add the route for the documentation.
+
+```python
+urlpatterns = [
+  ...
+  path('docs/', include_docs_urls(title='My APIs')),
+  path('schema/', schema_view),
+]
+```
+
+#### Option 2: Using Django REST Swagger
+
+1. Install `django-rest-swagger` package.
+
+```
+(projdir) $ pipenv install django-rest-swagger==2.2.0
+```
+
+2. Add app to the `INSTALLED_APPS` list in settings.py.
+
+```python
+INSTALLED_APPS = [
+  ...
+  # 3rd party
+  ...
+  'rest_framework.authtoken',
+  'rest_framework_swagger',
+  'allauth',
+  ...
+]
+```
+
+3. In projdir urls.py, import `get_swagger_view`, and use it when creating the `'swagger-docs'` route.
+
+```python
+from rest_framework_swagger.views import get_swagger_view
+...
+API_TITLE = 'My APIs'
+schema_view = get_swagger_view(title=API_TITLE)
+...
+urlpatterns = [
+  ...
+  path('swagger-docs/', schema_view),
+]
+```
+
+4. To tie the login/logout buttons in the swagger view to the APIs for login/logout in settings.py.
+
+```python
+SWAGGER_SETTINGS = {
+  'LOGIN_URL': 'rest_framework:login',
+  'LOGOUT_URL': 'rest_framework:logout',
+}
+```
