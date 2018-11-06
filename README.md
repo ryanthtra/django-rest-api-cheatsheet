@@ -311,8 +311,11 @@ def has_object_permission(self, request, view_obj):
 2. Server responds with 401 status (`Unauthorized`) and `www-Authenticate` HTTP header
 3. Client sends credentials back with Authorization HTTP header
 4. Server checks credentials; responds with 200 OK or 403 Forbidden code.
+
    `+` Simple
+
    `-` Must send credentials for every request
+
    `-` Insecure
 
 #### Session Authentication
@@ -322,9 +325,13 @@ def has_object_permission(self, request, view_obj):
 3. Server creates session object; stores in database.
 4. Server sends client session ID; client stores as cookie.
 5. When user logs out, session ID destroyed by client and server.
+
    `+` Credentials sent only once.
+
    `+` More efficient lookup for session ID.
+
    `-` Session ID only valid in browser where logged in.
+
    `-` Cookie sent out for every request, even no authorization required ones.
 
 #### Token Authentication
@@ -333,9 +340,13 @@ def has_object_permission(self, request, view_obj):
 2. Unique token generated and stored by client as cookie or local storage.
 3. Token passed in header of each HTTP request.
 4. Server verifies token validity to see if user is authenticated.
+
    `+` Tokens stored only in client.
+
    `+` Token can be shared by multiple front-ends.
+
    `-` Tokens can become large.
+
    `-` Token usually contains all user info.
 
 ### Setting Up Token Authentication
