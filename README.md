@@ -444,3 +444,45 @@ urlpatterns = [
   path('api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
 ]
 ```
+
+## Implementing Viewsets (e.g., improving on views)
+
+1. In an app's views.py, import `viewsets` from the `rest_framework` package.
+
+```python
+from rest_framework import viewsets
+```
+
+(We are additionally no longer requiring the importing of `generics` or `permissions`.)
+
+2. Create view class that extends `viewset.ModelViewSet`.
+
+```python
+class ProductViewSet(viewset.ModelViewSet):
+  permission_classes = (IsAuthorOrReadOnly,)
+  queryset = Product.objects.all()
+  serializer_class = ProductSerializer
+```
+
+## Implementing Routers (e.g., improving of url patterns)
+
+1. Import `SimpleRouter` from the `rest_framework.routers` package.
+
+```python
+from rest_framework.routers import SimpleRouter
+```
+
+2. Import the Viewset classes (we also no longer import the old View classes).
+
+```python
+from .views import ProductViewSet
+```
+
+3. Create an instance of `SimpleRouter`, register routes for the `ViewSet`s, and then set the `urlpatterns` variable to the router's urls.
+
+```python
+router = SimpleRouter()
+router.register('products', ProductViewSet, base_name='products')
+
+urlpatterns = router.urls
+```
