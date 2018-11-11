@@ -294,7 +294,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 3. Override boolean methods `has_permission()` or `has_object_permission()`
 
 ```python
-def has_object_permission(self, request, view_obj):
+def has_object_permission(self, request, view, obj):
   # Read-only permissions allowed for SAFE_METHODS (GET, OPTIONS, HEAD)
   if request.method in permissions.SAFE_METHODS:
     return True
@@ -585,5 +585,17 @@ urlpatterns = [
 SWAGGER_SETTINGS = {
   'LOGIN_URL': 'rest_framework:login',
   'LOGOUT_URL': 'rest_framework:logout',
+}
+```
+
+## Adding Pagination
+
+1. In settings.py, add two properties: `DEFAULT_PAGINATION_CLASS` and `PAGE_SIZE`
+
+```python
+REST_FRAMEWORK = {
+  ...
+  'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+  'PAGE_SIZE': 10
 }
 ```
